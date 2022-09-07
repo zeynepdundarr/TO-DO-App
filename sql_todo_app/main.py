@@ -17,9 +17,9 @@ def get_db():
     finally:
         db.close()
 
-#
 @app.post("/users/",response_model=schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    db.close_all()
     db_user = crud.get_user_by_email(db, email=user.email)
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -39,6 +39,13 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
 
+# try 
+@app.get("/users/{user_id}/todos/", response_model=schemas.Todo)
+def get_todo_for_user(
+    user_id: int, db: Session = Depends(get_db)
+):
+    return crud.get_user_todos(db=db, user_id=user_id)
+# try 
 
 @app.post("/users/{user_id}/todos/", response_model=schemas.Todo)
 def create_todo_for_user(
