@@ -17,22 +17,23 @@ class User(Base):
 class Todo(Base):
     __tablename__ = "Todos"
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True)
-    description = Column(String, index=True)
+    title = Column(String, default="", index=True)
+    description = Column(String, default="", index=True)
     # added features
-    status = Column(String, index=True)
-    notes = Column(String, index=True)
-    is_ticked = Column(Boolean, index=True)
-    is_starred = Column(Boolean, index=True)
-    category_label = Column(String, index=True)
+    status = Column(String, default="", index=True)
+    notes = Column(String, default="", index=True)
+    is_ticked = Column(Boolean, default=False, index=True)
+    is_starred = Column(Boolean, default=False, index=True)
+    category_label = Column(String, default="", index=True)
     # TODO: make a date & time type
-    date = Column(String, index=True) 
+    date = Column(String, default="", index=True) 
     # TODO: check the [String] below / implement later
     # assigned_users = Column([String], index=True) 
-    priority = Column(Integer, index=True)
-    due_label = Column(String, index=True)
-    label_color = Column(String, index=True)
-    schedule = Column(String, index=True)
+    priority = Column(Integer, default=0, index=True)
+    due_label = Column(String, default="", index=True)
+    label_color = Column(String, default="", index=True)
+    schedule = Column(String, default="", index=True)
+    
     owner = relationship("User", back_populates="user_todo")
     owner_id = Column(Integer, ForeignKey("Users.id"))
 

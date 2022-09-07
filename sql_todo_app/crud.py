@@ -20,8 +20,9 @@ def create_user(db: Session, user: schemas.UserCreate):
     db.refresh(db_user)
     return db_user
 
-def get_todos(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Todo).offset(skip).limit(limit).all()
+def get_todos(db: Session, user_id: int, skip: int = 0, limit: int = 100):
+    # return db.query(models.Todo).offset(skip).limit(limit).all()
+    return db.query(models.Todo).filter(models.Todo.owner_id == user_id).first()
 
 def create_user_todo(db: Session, todo: schemas.TodoCreate, user_id: int):
     db_todo = models.Todo(**todo.dict(), owner_id=user_id)
@@ -30,7 +31,15 @@ def create_user_todo(db: Session, todo: schemas.TodoCreate, user_id: int):
     db.refresh(db_todo)
     return db_todo
 
-# try
 def get_user_todos(db: Session, user_id: int):
-    return db.query(models.Todo).filter(models.Todo.owner_id == user_id).first()
-# try
+    return db.query(models.Todo).filter(models.Todo.owner_id == user_id).all()
+
+def get_user_a_todo(db: Session, user_id: int, todo_id: int):
+    return db.query(models.Todo).filter(models.Todo.owner_id == user_id, models.Todo.id == todo_id).first()
+
+def update_a_user_todo(db: Session, user_id: int, todo_id: int, skip: int = 0, limit: int = 100):
+    q = db.query(models.Todo).filter(models.Todo.owner_id == user_id, models.Todo.id == todo_id).update({'is_ticked': True})
+    db.add(q)
+    db.commit()
+    return db.query(models.Todo).offset(skip).limit(limit).first()
+

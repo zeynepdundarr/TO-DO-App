@@ -5,22 +5,33 @@ from pydantic import BaseModel, EmailStr
 
 # reading & creating in common
 class TodoBase(BaseModel):
-    title: str
-    description: Union[str, None] = None
-    status: str
-    notes: str
-    is_ticked: bool
-    category_label: str
-    date: str
-    priority: int
-    due_label: str
-    label_color:str
-    schedule: str
+    # title: Union[str, None] = ""
+    # description: Union[str, None] = ""
+    # status: Union[str, None] = ""
+    # notes: Union[str, None] = ""
+    # is_ticked: Union[bool, None] = False
+    # category_label: Union[str, None] = ""
+    # date: Union[str, None] = ""
+    # priority: Union[str, None] = ""
+    # due_label: Union[str, None] = ""
+    # label_color: Union[str, None] = ""
+    # schedule: Union[str, None] = ""
+    title: str = ""
+    description:  str = ""
+    status: str = ""
+    notes:  str = ""
+    is_ticked: bool = False
+    category_label:  str = ""
+    date:  str = ""
+    priority: str = ""
+    due_label: str = ""
+    label_color: str = ""
+    schedule: str = ""
+    is_starred: bool = False
 
 # only creation
 class TodoCreate(TodoBase):
-    # is starred check for the result of api call
-    is_starred: bool
+    pass
 
 class Todo(TodoBase):
     id: int
@@ -40,7 +51,7 @@ class User(UserBase):
     id: int
     is_active: bool
     todos: List[Todo] = []
-    todos_done: int | None = 0
+    todos_done: int  
 
     class Config:
         orm_mode = True
