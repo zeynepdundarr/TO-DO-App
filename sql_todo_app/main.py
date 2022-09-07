@@ -34,14 +34,13 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
 
+@app.get("/todos/{todo_id}", response_model=schemas.Todo)
+def get_a_todo(todo_id=int, db: Session = Depends(get_db)):
+    return crud.get_user_a_todo(db=db, todo_id=todo_id)
+
 @app.get("/user/{user_id}/todos/", response_model=List[schemas.Todo])
 def get_todos_for_user(user_id: int, db: Session = Depends(get_db)):
     return crud.get_user_todos(db=db, user_id=user_id)
-
-@app.get("/users/{user_id}/todos/{todo_id}", response_model=schemas.Todo)
-def get_a_todo_for_user(
-    user_id: int, todo_id=int, db: Session = Depends(get_db)):
-    return crud.get_user_a_todo(db=db, user_id=user_id, todo_id=todo_id)
 
 @app.post("/users/{user_id}/todos/", response_model=schemas.Todo)
 def create_todo_for_user(

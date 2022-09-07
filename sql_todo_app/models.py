@@ -33,7 +33,7 @@ class Todo(Base):
     due_label = Column(String, default="", index=True)
     label_color = Column(String, default="", index=True)
     schedule = Column(String, default="", index=True)
-    
+
     owner = relationship("User", back_populates="user_todo")
     owner_id = Column(Integer, ForeignKey("Users.id"))
 
@@ -45,5 +45,3 @@ class Todo(Base):
 
 #     a_todo = relationship("Todo", back_populates="todolist")
 #     user = relationship("User", back_populates="user_todolist")
-
-
