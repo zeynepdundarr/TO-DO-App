@@ -40,17 +40,8 @@ def get_user_a_todo(db: Session, user_id: int, todo_id: int):
     # use get instead of filter and first
     return db.query(models.Todo).get(todo_id)
 
-def update_a_user_todo(db: Session, user_id: int, todo_id: int, skip: int = 0, limit: int = 100):
-    # upd = update("Todos")
-    # val = upd.values({'is_ticked': True})
-    # cond = val.where((models.Todo.id == todo_id) & (models.User.id == user_id))
-
-    # find table variable
+def update_a_todo(db: Session, todo_id: int):
     todo_item = db.query(models.Todo).get(todo_id)
-    todo_item.is_ticked = True    #models.Todo.update().where((models.Todo.id == todo_id) & (models.User.id == user_id)).values({'is_ticked': True})
+    todo_item.is_ticked = True 
     return todo_item
-    # q = db.query(models.Todo).filter(models.Todo.owner_id == user_id, models.Todo.id == todo_id).update({'is_ticked': True}).values({'is_ticked': True})
-    # db.add(q)
-    # db.commit()
-    # return db.query(models.Todo).offset(skip).limit(limit).first()
-
+  

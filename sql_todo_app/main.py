@@ -30,29 +30,28 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     users = crud.get_users(db, skip=skip, limit=limit)
     return users
-
+# checked
 @app.get("/users/{user_id}", response_model=schemas.User)
 def read_user(user_id: int, db: Session = Depends(get_db)):
     db_user = crud.get_user(db, user_id=user_id)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
-
+# checked
 @app.get("/user/{user_id}/todos/", response_model=List[schemas.Todo])
 def get_todos_for_user(user_id: int, db: Session = Depends(get_db)):
     return crud.get_user_todos(db=db, user_id=user_id)
-
+# checked
 @app.get("/users/{user_id}/todos/{todo_id}", response_model=schemas.Todo)
 def get_a_todo_for_user(
     user_id: int, todo_id=int, db: Session = Depends(get_db)):
     return crud.get_user_a_todo(db=db, user_id=user_id, todo_id=todo_id)
-
+# checked
 @app.post("/users/{user_id}/todos/", response_model=schemas.Todo)
 def create_todo_for_user(
-    user_id: int, todo: schemas.TodoCreate, db: Session = Depends(get_db)
-):
+    user_id: int, todo: schemas.TodoCreate, db: Session = Depends(get_db)):
     return crud.create_user_todo(db=db, todo=todo, user_id=user_id)
 
-@app.post("/users/{user_id}/todos/{todo_id}", response_model=schemas.Todo)
-def update_todo_for_user(todo_id: int, user_id: int, db: Session = Depends(get_db)):
-    return crud.update_a_user_todo(db, user_id=user_id, todo_id=todo_id)
+@app.post("/todos/{todo_id}", response_model=schemas.Todo)
+def update_a_todo(todo_id: int, db: Session = Depends(get_db)):
+    return crud.update_a_todo(db, todo_id=todo_id)
