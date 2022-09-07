@@ -16,6 +16,7 @@ def get_db():
     finally:
         db.close()
 
+# checked
 @app.post("/users/", response_model=schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db.close_all()
@@ -24,16 +25,19 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Email already registered")
     return crud.create_user(db=db, user=user)
 
+# checked
 @app.get("/users/", response_model=List[schemas.User])
 def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     users = crud.get_users(db, skip=skip, limit=limit)
     return users
 
-@app.get("/todos/", response_model=schemas.Todo)
-def read_todos(user_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    todos = crud.get_user_todos(db, user_id, skip=skip, limit=limit)
-    return todos
+## Cannot fetch only todos, fetch them with user_id
+# @app.get("/todos/", response_model=schemas.Todo)
+# def read_todos(user_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+#     todos = crud.get_user_todos(db, user_id, skip=skip, limit=limit)
+#     return todos
 
+# checked
 @app.get("/users/{user_id}", response_model=schemas.User)
 def read_user(user_id: int, db: Session = Depends(get_db)):
     db_user = crud.get_user(db, user_id=user_id)
@@ -41,9 +45,8 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
 
-@app.get("/todos/{user_id}", response_model=List[schemas.Todo])
-def get_todos_for_user(
-    user_id: int, db: Session = Depends(get_db)):
+@app.get("/user/{user_id}/todos/", response_model=List[schemas.Todo])
+def get_todos_for_user(user_id: int, db: Session = Depends(get_db)):
     return crud.get_user_todos(db=db, user_id=user_id)
 
 @app.get("/users/{user_id}/todos/{todo_id}", response_model=schemas.Todo)
