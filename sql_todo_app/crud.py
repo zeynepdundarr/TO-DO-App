@@ -5,14 +5,14 @@ from . import models, schemas
 def get_user(db: Session, user_id: int):
     return db.query(models.User).filter(models.User.id == user_id).first()
 
-
+# TODO: this can be varied
 def get_user_by_email(db: Session, email: str):
+    # db.close_all()
+    # print("Session closed")
     return db.query(models.User).filter(models.User.email == email).first()
-
 
 def get_users(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.User).offset(skip).limit(limit).all()
-
 
 def create_user(db: Session, user: schemas.UserCreate):
     fake_hashed_password = user.password + "notreallyhashed"
@@ -22,14 +22,12 @@ def create_user(db: Session, user: schemas.UserCreate):
     db.refresh(db_user)
     return db_user
 
+def get_todos(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Todo).offset(skip).limit(limit).all()
 
-def get_items(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Item).offset(skip).limit(limit).all()
-
-
-def create_user_item(db: Session, item: schemas.ItemCreate, user_id: int):
-    db_item = models.Item(**item.dict(), owner_id=user_id)
-    db.add(db_item)
+def create_user_todo(db: Session, todo: schemas.TodoCreate, user_id: int):
+    db_todo = models.Todo(**todo.dict(), owner_id=user_id)
+    db.add(db_todo)
     db.commit()
-    db.refresh(db_item)
-    return db_item
+    db.refresh(db_todo)
+    return db_todo
