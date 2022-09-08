@@ -6,9 +6,12 @@ from .database import Base
 class User(Base):
     __tablename__ = "Users"
     id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, index=True)
     email = Column(String, unique=True, index=True)
     hashed_password = Column(String)
     is_active = Column(Boolean, default=True)
+    disabled = Column(Boolean, default=False)
+    
     #, index=True
     todos_done = Column(Integer, default=0)
     user_todo = relationship("Todo", back_populates="owner")
