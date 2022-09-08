@@ -2,6 +2,8 @@ from typing import Any
 from sqlalchemy.orm import Session
 from . import models, schemas
 from sqlalchemy import update
+# TODO: check is it appropriate to import HTTPException in this class
+from fastapi import HTTPException
 
 
 def get_user(db: Session, user_id: int):
@@ -40,12 +42,14 @@ def get_user_a_todo(db: Session, todo_id: int):
     return db.query(models.Todo).get(todo_id)
 
 # generalize it for a user
-def update_a_todo(db: Session, todo_id: int, feature: Any, new_val: Any):
-    todo_item = db.query(models.Todo).get(todo_id)
-    # detect_type
-    if type(feature) == type(new_val):
-        todo_item.feature = new_val
-    else:
-        print("ERROR: crud.py - Types are not matching!")
-    return todo_item
-  
+def update_a_todo(todo, db: Session, todo_id: int, ):
+    db_todo = db.get(models.Todo, todo_id)
+    if not db_todo:
+        raise HTTPException(status_code=404, detail="Hero not found")
+    hero_data = todo.dict(exclude_unset=True)
+    for key, value in hero_data.items():
+        setattr(db_todo, key, value)
+    db.add(db_todo)
+    db.commit()
+    db.refresh(db_todo)
+    return db_todo
