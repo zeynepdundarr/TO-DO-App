@@ -41,13 +41,13 @@ def get_user_todos(db: Session, user_id: int):
 def get_user_a_todo(db: Session, todo_id: int):
     return db.query(models.Todo).get(todo_id)
 
-# generalize it for a user
-def update_a_todo(todo, db: Session, todo_id: int, ):
+def update_a_todo(todo, db: Session, todo_id: int):
+    # with is omitted, check whether it is a problem
     db_todo = db.get(models.Todo, todo_id)
     if not db_todo:
-        raise HTTPException(status_code=404, detail="Hero not found")
-    hero_data = todo.dict(exclude_unset=True)
-    for key, value in hero_data.items():
+        raise HTTPException(status_code=404, detail="Todo is not found")
+    todo_data = todo.dict(exclude_unset=True)
+    for key, value in todo_data.items():
         setattr(db_todo, key, value)
     db.add(db_todo)
     db.commit()
