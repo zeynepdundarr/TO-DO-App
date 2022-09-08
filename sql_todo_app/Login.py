@@ -42,4 +42,6 @@ def login(data: OAuth2PasswordRequestForm = Depends()):
     elif password != user['password']:
         raise InvalidCredentialsException
 
-    return {'status': 'Success'}
+    access_token = manager.create_access_token(
+    data={'sub': email})
+    return {'access_token': access_token}
