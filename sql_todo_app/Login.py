@@ -45,3 +45,8 @@ def login(data: OAuth2PasswordRequestForm = Depends()):
     access_token = manager.create_access_token(
     data={'sub': email})
     return {'access_token': access_token}
+
+
+@app.get('/protected')
+def protected_route(user=Depends(manager)):
+    return {'user': user}
