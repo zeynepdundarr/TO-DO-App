@@ -26,7 +26,7 @@ fake_users_db = {
         "todos_done": 1,
         "email": "alice@example.com",
         "hashed_password": "fakehashedsecret2",
-        "disabled": True,
+        "disabled": False,
     },
 }
 
