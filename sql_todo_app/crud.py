@@ -37,7 +37,8 @@ def get_user_todos(db: Session, user_id: int):
 
 def get_user_a_todo(db: Session, todo_id: int):
     return db.query(models.Todo).get(todo_id)
-
+        
+# generalize it for a user
 def update_a_todo(db: Session, todo_id: int):
     todo_item = db.query(models.Todo).get(todo_id)
     todo_item.is_ticked = True 
