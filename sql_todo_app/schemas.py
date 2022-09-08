@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import List, Union, Optional
 from xmlrpc.client import Boolean
 
 from pydantic import BaseModel, EmailStr
@@ -32,6 +32,20 @@ class TodoBase(BaseModel):
 # only creation
 class TodoCreate(TodoBase):
     pass
+
+class TodoUpdate(TodoBase):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    status: Optional[str] = None
+    notes: Optional[str]= None
+    is_ticked: Optional[bool] = None
+    category_label:  str = None
+    date: Optional[str]= None
+    priority: Optional[str] = None
+    due_label: Optional[str] = None
+    label_color: Optional[str] = None
+    schedule: Optional[str] = None
+    is_starred: Optional[bool] = None
 
 class Todo(TodoBase):
     id: int
