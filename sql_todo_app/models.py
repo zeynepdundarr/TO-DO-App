@@ -2,7 +2,6 @@ from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 from .database import Base
 
-
 class User(Base):
     __tablename__ = "Users"
     id = Column(Integer, primary_key=True, index=True)
@@ -12,7 +11,6 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     disabled = Column(Boolean, default=False)
     
-    #, index=True
     todos_done = Column(Integer, default=0)
     user_todo = relationship("Todo", back_populates="owner")
 
@@ -40,11 +38,3 @@ class Todo(Base):
     owner = relationship("User", back_populates="user_todo")
     owner_id = Column(Integer, ForeignKey("Users.id"))
 
-# class TodoList(Base):
-#     __tablename__ = "TodoList"
-#     id = Column(Integer, primary_key=True, index=True)
-#     # TODO: make a list of "Todo" type 
-#     todo_list = Column(String, index=True)
-
-#     a_todo = relationship("Todo", back_populates="todolist")
-#     user = relationship("User", back_populates="user_todolist")
