@@ -41,7 +41,7 @@ def get_user_todos(db: Session, user_id: int):
 def get_user_a_todo(db: Session, todo_id: int):
     return db.query(models.Todo).get(todo_id)
 
-def update_a_todo(todo, db: Session, todo_id: int):
+def update_a_todo(todo: schemas.TodoUpdate, db: Session, todo_id: int):
     # with is omitted, check whether it is a problem
     db_todo = db.get(models.Todo, todo_id)
     if not db_todo:
