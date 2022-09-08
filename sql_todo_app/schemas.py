@@ -5,17 +5,6 @@ from pydantic import BaseModel, EmailStr
 
 # reading & creating in common
 class TodoBase(BaseModel):
-    # title: Union[str, None] = ""
-    # description: Union[str, None] = ""
-    # status: Union[str, None] = ""
-    # notes: Union[str, None] = ""
-    # is_ticked: Union[bool, None] = False
-    # category_label: Union[str, None] = ""
-    # date: Union[str, None] = ""
-    # priority: Union[str, None] = ""
-    # due_label: Union[str, None] = ""
-    # label_color: Union[str, None] = ""
-    # schedule: Union[str, None] = ""
     title: str = ""
     description:  str = ""
     status: str = ""
@@ -33,6 +22,13 @@ class TodoBase(BaseModel):
 class TodoCreate(TodoBase):
     pass
 
+class Todo(TodoBase):
+    id: int
+    owner_id: int
+
+    class Config:
+        orm_mode = True
+        
 class TodoUpdate(TodoBase):
     title: Optional[str] = None
     description: Optional[str] = None
@@ -47,12 +43,7 @@ class TodoUpdate(TodoBase):
     schedule: Optional[str] = None
     is_starred: Optional[bool] = None
 
-class Todo(TodoBase):
-    id: int
-    owner_id: int
 
-    class Config:
-        orm_mode = True
 
 class UserBase(BaseModel):
     #email: EmailStr
