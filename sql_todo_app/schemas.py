@@ -43,20 +43,23 @@ class TodoUpdate(TodoBase):
     schedule: Optional[str] = None
     is_starred: Optional[bool] = None
 
-
-
 class UserBase(BaseModel):
     #email: EmailStr
     email: str
 
 class UserCreate(UserBase):
     password: str
-   
+
 class User(UserBase):
     id: int
-    is_active: bool
+    is_active: bool 
     todos: List[Todo] = []
     todos_done: int  
-
+    # will be checked - write to db
+    disabled: Union[bool, None] = None
+    username: str = None
     class Config:
         orm_mode = True
+
+class UserInDB(User):
+    hashed_password: str

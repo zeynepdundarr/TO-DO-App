@@ -3,18 +3,27 @@ from typing import Union
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
+from sql_todo_app.schemas import User, UserInDB
 
 fake_users_db = {
     "johndoe": {
+        "id": 1,
         "username": "johndoe",
-        "full_name": "John Doe",
+       # "full_name": "John Doe",
+        "is_active": False,
+        "todos": [],
+        "todos_done": 1,
         "email": "johndoe@example.com",
         "hashed_password": "fakehashedsecret",
         "disabled": False,
     },
     "alice": {
+        "id": 2,
         "username": "alice",
-        "full_name": "Alice Wonderson",
+       # "full_name": "Alice Wonderson",
+        "is_active": False,
+        "todos": [],
+        "todos_done": 1,
         "email": "alice@example.com",
         "hashed_password": "fakehashedsecret2",
         "disabled": True,
@@ -30,16 +39,15 @@ def fake_hash_password(password: str):
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
+# class User(BaseModel):
+#     username: str
+#     email: Union[str, None] = None
+#     #full_name: Union[str, None] = None
+#     disabled: Union[bool, None] = None
 
-class User(BaseModel):
-    username: str
-    email: Union[str, None] = None
-    full_name: Union[str, None] = None
-    disabled: Union[bool, None] = None
 
-
-class UserInDB(User):
-    hashed_password: str
+# class UserInDB(User):
+#     hashed_password: str
 
 
 def get_user(db, username: str):
@@ -70,7 +78,6 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
-
 
 @app.post("/token")
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
