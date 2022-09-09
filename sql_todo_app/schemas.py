@@ -1,9 +1,7 @@
 from typing import List, Union, Optional
 from xmlrpc.client import Boolean
-
 from pydantic import BaseModel, EmailStr
 
-# reading & creating in common
 class TodoBase(BaseModel):
     title: str = ""
     description:  str = ""
@@ -18,7 +16,6 @@ class TodoBase(BaseModel):
     schedule: str = ""
     is_starred: bool = False
 
-# only creation
 class TodoCreate(TodoBase):
     pass
 
@@ -46,6 +43,7 @@ class TodoUpdate(TodoBase):
 class UserBase(BaseModel):
     #email: EmailStr
     email: str
+    username: str
 
 class UserCreate(UserBase):
     password: str

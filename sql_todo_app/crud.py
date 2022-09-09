@@ -5,9 +5,11 @@ from sqlalchemy import update
 # TODO: check is it appropriate to import HTTPException in this class
 from fastapi import HTTPException
 
-
 def get_user(db: Session, user_id: int):
     return db.query(models.User).filter(models.User.id == user_id).first()
+
+def get_user_by_username(db: Session, user_name: str):
+    return db.query(models.User).filter(models.User.username == user_name).first()
 
 # TODO: this can be varied
 def get_user_by_email(db: Session, email: str):
@@ -19,7 +21,7 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
 def create_user(db: Session, user: schemas.UserCreate):
     # TODO: properly hash password
     fake_hashed_password = user.password + "notreallyhashed"
-    db_user = models.User(email=user.email, hashed_password=fake_hashed_password)
+    db_user = models.User(email=user.email, username=user.username, hashed_password=fake_hashed_password)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)

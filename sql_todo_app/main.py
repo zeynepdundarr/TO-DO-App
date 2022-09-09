@@ -51,3 +51,4 @@ def create_todo_for_user(
 @app.patch("/todos/{todo_id}", response_model=schemas.Todo)
 def update_todo(todo_id: int, todo: schemas.TodoUpdate, db: Session = Depends(get_db)):
     return crud.update_a_todo(db=db, todo=todo, todo_id=todo_id)
+
