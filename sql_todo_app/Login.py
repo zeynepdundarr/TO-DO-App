@@ -7,6 +7,7 @@ from .schemas import User, UserInDB
 from . import crud
 from .crud import *
 from .database import SessionLocal
+from . import DB
 
 #### TESTING ####
 def get_user(db, username: str):
@@ -102,6 +103,6 @@ async def read_users_me(current_user: User = Depends(get_current_active_user)):
     return current_user
 
 @app.get("/users/test_get_user/{username}", response_model=schemas.UserInDB)
-async def test_get_user(username: str, db: Session = Depends(get_db)):
+async def test_get_user(username: str, db: Session = Depends(DB.get_db)):
    return get_user(db, username)
 
