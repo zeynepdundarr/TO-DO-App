@@ -11,11 +11,7 @@ from . import DB
 
 #### TESTING ####
 def get_user(db, username: str):
-    # returns none?
     user = crud.get_user_by_username(db, username)
-    print("TEST 0: ", user)       
-    print("TEST 1: conversion to UserInDB: ", vars(user))
-    # UserInDB(**user_dict)
     return UserInDB(**vars(user))
 
 def get_db():
@@ -27,8 +23,6 @@ def get_db():
 
 app = FastAPI() 
 
-# TODO: uncomment for debugging it later
-#print("CRUD operation in Login: ", get_user_by_email(db_real, "idun"))
 def fake_hash_password(password: str):
     return password + "notreallyhashed" 
 
@@ -63,10 +57,7 @@ async def login(db: Session = Depends(DB.get_db), form_data: OAuth2PasswordReque
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     user = UserInDB(**user_dict)
     hashed_password = fake_hash_password(form_data.password)
-
-    print("TEST 1 - hashed_password: ", hashed_password)
-    print("TEST 2 - user.hashed_password: ", user.hashed_password)
-
+    
     if not hashed_password == user.hashed_password:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     return {"access_token": user.username, "token_type": "bearer"}
