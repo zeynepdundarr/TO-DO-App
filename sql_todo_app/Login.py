@@ -17,15 +17,6 @@ def get_user(db, username: str):
     print("TEST 1: conversion to UserInDB: ", vars(user))
     # UserInDB(**user_dict)
     return UserInDB(**vars(user))
-#### TESTING ####
-
-# # old
-# def get_user(db, username: str):
-#     if username in db:
-#         user_dict = db[username]
-#         print("TEST 1: user_dict", user_dict)
-#         return UserInDB(**user_dict)
-
 
 def get_db():
     db = SessionLocal()
@@ -34,37 +25,12 @@ def get_db():
     finally:
         db.close()
 
-fake_users_db = {
-    "johndoe": {
-        "id": 1,
-        "username": "johndoe",
-    # "full_name": "John Doe",
-        "is_active": False,
-        "todos": [],
-        "todos_done": 1,
-        "email": "johndoe@example.com",
-        "hashed_password": "fakehashedsecret",
-        "disabled": False,
-    },
-    "alice": {
-        "id": 2,
-        "username": "alice",
-    # "full_name": "Alice Wonderson",
-        "is_active": False,
-        "todos": [],
-        "todos_done": 1,
-        "email": "alice@example.com",
-        "hashed_password": "fakehashedsecret2",
-        "disabled": False,
-    },
-}
-
 app = FastAPI() 
 
 # TODO: uncomment for debugging it later
 #print("CRUD operation in Login: ", get_user_by_email(db_real, "idun"))
 def fake_hash_password(password: str):
-    return "fakehashed" + password
+    return password + "notreallyhashed" 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -88,12 +54,19 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
     return current_user
 
 @app.post("/token")
-async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    user_dict = fake_users_db.get(form_data.username)
+async def login(db: Session = Depends(DB.get_db), form_data: OAuth2PasswordRequestForm = Depends()):
+
+    user_obj = crud.get_user_by_username(db, form_data.username)
+    user_dict = vars(user_obj)
+
     if not user_dict:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     user = UserInDB(**user_dict)
     hashed_password = fake_hash_password(form_data.password)
+
+    print("TEST 1 - hashed_password: ", hashed_password)
+    print("TEST 2 - user.hashed_password: ", user.hashed_password)
+
     if not hashed_password == user.hashed_password:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     return {"access_token": user.username, "token_type": "bearer"}
