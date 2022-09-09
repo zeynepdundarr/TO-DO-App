@@ -9,7 +9,6 @@ from .crud import *
 from .database import SessionLocal
 from . import DB
 
-#### TESTING ####
 def get_user(db, username: str):
     user = crud.get_user_by_username(db, username)
     return UserInDB(**vars(user))
@@ -57,7 +56,7 @@ async def login(db: Session = Depends(DB.get_db), form_data: OAuth2PasswordReque
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     user = UserInDB(**user_dict)
     hashed_password = fake_hash_password(form_data.password)
-    
+
     if not hashed_password == user.hashed_password:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     return {"access_token": user.username, "token_type": "bearer"}

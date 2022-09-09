@@ -1,11 +1,13 @@
 from typing import List, Union, Optional
 from xmlrpc.client import Boolean
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ValidationError, validator, Field
 
 class TodoBase(BaseModel):
-    title: str = ""
-    description:  str = ""
+    title: str | None = Field(
+        default=None, title="Enter A Todo", max_length=10)
+    description: str = ""
     status: str = ""
+    # delete notes
     notes:  str = ""
     is_ticked: bool = False
     category_label:  str = ""
@@ -16,8 +18,17 @@ class TodoBase(BaseModel):
     schedule: str = ""
     is_starred: bool = False
 
+
 class TodoCreate(TodoBase):
-    pass
+    title: str
+    @validator("title")
+    def title_should_be_filled(cls, v):
+        if v == "":
+            raise ValueError('Title must not be empty string!')
+        if len(v) > 10:
+            raise ValueError('Title must not exceed 10 characters!')
+        return v.title()
+
 
 class Todo(TodoBase):
     id: int
