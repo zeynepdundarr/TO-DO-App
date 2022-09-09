@@ -52,12 +52,23 @@ class TodoUpdate(TodoBase):
     is_starred: Optional[bool] = None
 
 class UserBase(BaseModel):
-    #email: EmailStr
-    email: str
+    email: EmailStr
+    #email: int
     username: str
+
+    @validator('username')
+    def username_alphanumeric(cls, v):
+        if not v.isalnum():
+            raise ValueError('Username must be alphanumeric!')
+        return v.title()
 
 class UserCreate(UserBase):
     password: str
+    @validator("password")
+    def password_should_min_6_chars(cls, v):
+        if len(v) < 6 :
+            raise ValueError('Password must exceed 6 characters!')
+        return v.title()
 
 class User(UserBase):
     id: int
