@@ -54,4 +54,4 @@ def update_a_todo(todo: schemas.TodoUpdate, db: Session, todo_id: int):
     db.add(db_todo)
     db.commit()
     db.refresh(db_todo)
-    return db_todo
+    return db_todo 
