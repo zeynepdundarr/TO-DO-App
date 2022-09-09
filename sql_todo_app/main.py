@@ -29,7 +29,8 @@ def read_user(user_id: int, db: Session = Depends(DB.get_db)):
     print("TEST 1: db_user.name: ", db_user.username)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
-
+    return db_user
+    
 @app.get("/todos/{todo_id}", response_model=schemas.Todo)
 def get_a_todo(todo_id=int, db: Session = Depends(DB.get_db)):
     return crud.get_user_a_todo(db=db, todo_id=todo_id)
