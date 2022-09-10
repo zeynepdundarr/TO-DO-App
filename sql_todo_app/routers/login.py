@@ -52,7 +52,3 @@ async def login(db: Session = Depends(DB.get_db), form_data: OAuth2PasswordReque
     if not hashed_password == user.hashed_password:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     return {"access_token": user.username, "token_type": "bearer"}
-
-@router.get("/users/me")
-async def read_users_me(current_user: User = Depends(get_current_active_user)):
-    return current_user
