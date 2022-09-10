@@ -20,16 +20,7 @@ def register(user: schemas.UserCreate, db: Session = Depends(DB.get_db)):
     if db_user:
         raise HTTPException(status_code=400, detail="Username already registered")
     return crud.create_user(db=db, user=user)
-
-# # this is the same as users/me
-# @app.get("/users/{user_id}", response_model=schemas.User)
-# def read_user(user_id: int, db: Session = Depends(DB.get_db)):
-#     db_user = crud.get_user(db, user_id=user_id)
-#     print("TEST 1: db_user.name: ", db_user.username)
-#     if db_user is None:
-#         raise HTTPException(status_code=404, detail="User not found")
-#     return db_user
-
+    
 @app.get("/todos/{todo_id}", response_model=schemas.Todo)
 def get_a_todo(todo_id=int, db: Session = Depends(DB.get_db)):
     return crud.get_user_a_todo(db=db, todo_id=todo_id)
