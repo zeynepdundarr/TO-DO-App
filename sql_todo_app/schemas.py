@@ -25,7 +25,7 @@ class TodoCreate(TodoBase):
     def title_should_be_filled(cls, v):
         if v == "":
             raise ValueError('Title must not be empty string!')
-        if len(v) > 10:
+        if len(v) > 50:
             raise ValueError('Title must not exceed 10 characters!')
         return v.title()
 
@@ -51,9 +51,9 @@ class TodoUpdate(TodoBase):
     schedule: Optional[str] = None
     is_starred: Optional[bool] = None
 
+
 class UserBase(BaseModel):
     email: EmailStr
-    #email: int
     username: str
 
     @validator('username')
@@ -62,6 +62,7 @@ class UserBase(BaseModel):
             raise ValueError('Username must be alphanumeric!')
         return v.title()
 
+
 class UserCreate(UserBase):
     password: str
     @validator("password")
@@ -69,6 +70,7 @@ class UserCreate(UserBase):
         if len(v) < 6 :
             raise ValueError('Password must exceed 6 characters!')
         return v.title()
+    
 
 class User(UserBase):
     id: int
@@ -80,6 +82,7 @@ class User(UserBase):
     username: str = None
     class Config:
         orm_mode = True
+
 
 class UserInDB(User):
     hashed_password: str

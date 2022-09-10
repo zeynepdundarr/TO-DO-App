@@ -23,7 +23,7 @@ def get_db():
 app = FastAPI() 
 
 def fake_hash_password(password: str):
-    return password + "notreallyhashed" 
+    return "notreallyhashed" + password 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -48,8 +48,9 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
 
 @app.post("/token")
 async def login(db: Session = Depends(DB.get_db), form_data: OAuth2PasswordRequestForm = Depends()):
-
     user_obj = crud.get_user_by_username(db, form_data.username)
+    if user_obj is None:
+        raise HTTPException(status_code=404, detail="Incorrect username or password")
     user_dict = vars(user_obj)
 
     if not user_dict:
@@ -59,13 +60,9 @@ async def login(db: Session = Depends(DB.get_db), form_data: OAuth2PasswordReque
 
     if not hashed_password == user.hashed_password:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
+
     return {"access_token": user.username, "token_type": "bearer"}
 
 @app.get("/users/me")
 async def read_users_me(current_user: User = Depends(get_current_active_user)):
     return current_user
-
-@app.get("/users/test_get_user/{username}", response_model=schemas.UserInDB)
-async def test_get_user(username: str, db: Session = Depends(DB.get_db)):
-   return get_user(db, username)
-
