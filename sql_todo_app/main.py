@@ -1,41 +1,19 @@
-from typing import List
-from fastapi import Depends, FastAPI, HTTPException
-from sqlalchemy import any_
-from sqlalchemy.orm import Session
-from . import crud, models, schemas
-from .database import SessionLocal, engine
-from . import DB
-
-models.Base.metadata.create_all(bind=engine)
+from fastapi import Depends, FastAPI
+from .dependencies import get_query_token, get_token_header
+from .internal import admin
+from .routers import users, todos
 
 app = FastAPI()
+app.include_router(users.router)
+app.include_router(todos.router)
+app.include_router(
+    admin.router,
+    prefix="/admin",
+    tags=["admin"],
+    dependencies=[Depends(get_token_header)],
+    responses={418: {"description": "I'm a teapot"}},
+)
 
-@app.post("/users/", response_model=schemas.User)
-def register(user: schemas.UserCreate, db: Session = Depends(DB.get_db)):
-    db_user = crud.get_user_by_email(db, email=user.email)
-    if db_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-
-    db_user = crud.get_user_by_username(db, user_name=user.username)
-    if db_user:
-        raise HTTPException(status_code=400, detail="Username already registered")
-    return crud.create_user(db=db, user=user)
-    
-@app.get("/todos/{todo_id}", response_model=schemas.Todo)
-def get_a_todo(todo_id=int, db: Session = Depends(DB.get_db)):
-    return crud.get_user_a_todo(db=db, todo_id=todo_id)
-
-@app.get("/user/{user_id}/todos/", response_model=List[schemas.Todo])
-def get_todos_for_user(user_id: int, db: Session = Depends(DB.get_db)):
-    return crud.get_user_todos(db=db, user_id=user_id)
-
-# /todos/create
-@app.post("/users/{user_id}/todos", response_model=schemas.Todo)
-def create_todo_for_user(
-    user_id: int, todo: schemas.TodoCreate, db: Session = Depends(DB.get_db)):
-    return crud.create_user_todo(db=db, todo=todo, user_id=user_id)
-
-# /todos/{todo_id}/modify
-@app.patch("/todos/{todo_id}", response_model=schemas.Todo)
-def update_todo(todo_id: int, todo: schemas.TodoUpdate, db: Session = Depends(DB.get_db)):
-    return crud.update_a_todo(db=db, todo=todo, todo_id=todo_id)
+@app.get("/")
+async def root():
+    return {"message": "Hello Bigger Applications!"}
