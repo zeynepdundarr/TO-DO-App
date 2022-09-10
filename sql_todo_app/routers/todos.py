@@ -11,19 +11,18 @@ from .login import get_current_active_user
 #  check should I include it or not
 #  dependencies=[Depends(get_token_header)],
 router = APIRouter(prefix="/todos", tags=["todos"], responses={404: {"description" : "Not found"}})
-
-# TODO: delete dummy
-dummy_todo_list = [1,2,3]
-
+# +
 @router.get("/{todo_id}", response_model=Todo)
 def get_a_todo(todo_id=int, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
-    # change dummy todo list into current_user.todo_list
-    if int(todo_id) in dummy_todo_list:
+    user_todo_list = get_user_todos(db=db, user_id=current_user.id)
+    user_todo_list = [vars(obj) for obj in user_todo_list]
+    user_todo_id_list = [x["id"] for x in user_todo_list]
+    if todo_id in user_todo_id_list:
         return get_user_a_todo(db=db, todo_id=todo_id)
     else:
         raise HTTPException(status_code=404, detail="Todo not found!")
 
-@router.get("/user/", response_model=List[Todo])
+@router.get("/all/", response_model=List[Todo])
 def get_todos_for_user(db: Session = Depends(get_db),
 current_user: User = Depends(get_current_active_user)):
     return get_user_todos(db=db, user_id=current_user.id)

@@ -1,10 +1,11 @@
 from typing import List, Union, Optional
 from xmlrpc.client import Boolean
 from pydantic import BaseModel, EmailStr, ValidationError, validator, Field
+from typing import List
 
 class TodoBase(BaseModel):
     title: str | None = Field(
-        default=None, title="Enter A Todo", max_length=10)
+        default=None, title="Enter A Todo", max_length=100)
     description: str = ""
     status: str = ""
     # delete notes
@@ -17,7 +18,7 @@ class TodoBase(BaseModel):
     label_color: str = ""
     schedule: str = ""
     is_starred: bool = False
-
+    
 
 class TodoCreate(TodoBase):
     title: str
@@ -25,8 +26,8 @@ class TodoCreate(TodoBase):
     def title_should_be_filled(cls, v):
         if v == "":
             raise ValueError('Title must not be empty string!')
-        if len(v) > 50:
-            raise ValueError('Title must not exceed 10 characters!')
+        if len(v) > 100:
+            raise ValueError('Title must not exceed 100 characters!')
         return v.title()
 
 
@@ -37,13 +38,14 @@ class Todo(TodoBase):
     class Config:
         orm_mode = True
         
+
 class TodoUpdate(TodoBase):
     title: Optional[str] = None
     description: Optional[str] = None
     status: Optional[str] = None
     notes: Optional[str]= None
     is_ticked: Optional[bool] = None
-    category_label:  str = None
+    category_label: str = None
     date: Optional[str]= None
     priority: Optional[str] = None
     due_label: Optional[str] = None
@@ -55,6 +57,7 @@ class TodoUpdate(TodoBase):
 class UserBase(BaseModel):
     email: EmailStr
     username: str
+    todos_done: int = 0
 
     @validator('username')
     def username_alphanumeric(cls, v):
@@ -74,15 +77,14 @@ class UserCreate(UserBase):
 
 class User(UserBase):
     id: int
-    is_active: bool 
-    todos: List[Todo] = []
-    todos_done: int  
-    # will be checked - write to db
-    disabled: Union[bool, None] = None
     username: str = None
+    is_active: bool 
+    disabled: Union[bool, None] = None
     class Config:
         orm_mode = True
 
+class UserUpdate(User):
+    pass
 
 class UserInDB(User):
     hashed_password: str

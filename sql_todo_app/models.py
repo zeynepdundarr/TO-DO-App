@@ -1,6 +1,7 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 from .database import Base
+from typing import List
 
 class User(Base):
     __tablename__ = "Users"
@@ -10,7 +11,6 @@ class User(Base):
     hashed_password = Column(String)
     is_active = Column(Boolean, default=True)
     disabled = Column(Boolean, default=False)
-    
     todos_done = Column(Integer, default=0)
     user_todo = relationship("Todo", back_populates="owner")
 
