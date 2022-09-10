@@ -22,7 +22,7 @@ def fake_decode_token(db, token):
     user = get_user(db, token)
     return user
 
-async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(DB.get_db)):
     user = fake_decode_token(db, token)
     if not user:
         raise HTTPException(
@@ -37,7 +37,7 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
-@router.post("/token")
+@router.post("/token", tags=["login"])
 async def login(db: Session = Depends(DB.get_db), form_data: OAuth2PasswordRequestForm = Depends()):
     user_obj = crud.get_user_by_username(db, form_data.username)
     if user_obj is None:
