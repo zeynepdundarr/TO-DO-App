@@ -1,9 +1,7 @@
 from typing import Any
 from sqlalchemy.orm import Session
-from sql_todo_app.internal.admin import update_admin
 from . import models, schemas
 from sqlalchemy import update
-# TODO: check is it appropriate to import HTTPException in this class
 from fastapi import HTTPException
 
 def get_user(db: Session, user_id: int):
