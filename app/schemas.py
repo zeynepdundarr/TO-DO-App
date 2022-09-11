@@ -32,17 +32,6 @@ class Todo(TodoBase):
 
     class Config:
         orm_mode = True
-        
-
-class TodoUpdate(TodoBase):
-    title: Optional[str] = None
-    description: Optional[str] = None
-    status: Optional[str] = None
-    is_ticked: Optional[bool] = None
-    category_label: str = None
-    priority: Optional[str] = None
-    schedule: Optional[str] = None
-    is_starred: Optional[bool] = None
 
 
 class UserBase(BaseModel):
