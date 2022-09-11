@@ -1,4 +1,3 @@
-from tkinter.filedialog import test
 from fastapi import APIRouter, Depends, HTTPException
 from ..crud import *
 from ..models import *

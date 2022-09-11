@@ -7,10 +7,9 @@ from ..DB import get_db
 from ..login import get_current_active_user, fake_hash_password
 from fastapi.security import OAuth2PasswordRequestForm
 
-
 router = APIRouter()
 
-@router.post("/users/", tags=["users"], response_model=User)
+@router.post("/users/", tags=["users"], response_model=User, status_code=201)
 def register(user: UserCreate, db: Session = Depends(get_db)):
     db_user = get_user_by_email(db, email=user.email)
     if db_user:

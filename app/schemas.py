@@ -2,8 +2,8 @@ from typing import Union
 from pydantic import BaseModel, EmailStr, validator, Field
 
 class TodoBase(BaseModel):
-    title: str | None = Field(
-        default=None, title="Enter A Todo", max_length=100)
+    title: str = Field(
+        default="title", title="Enter A Todo", max_length=100)
     description: str = ""
     status: str = ""
     is_ticked: bool = False
