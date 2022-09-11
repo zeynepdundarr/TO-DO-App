@@ -1,6 +1,6 @@
 from tkinter.filedialog import test
 from fastapi import APIRouter, Depends, HTTPException
-from ..crud import get_user_a_todo, get_user_todos, create_user_todo, test_update_a_todo, update_a_todo, read_todo_by_filter
+from ..crud import get_user_a_todo, get_user_todos, create_user_todo, update_a_todo, update_a_todo, read_todo_by_filter, update_todo_by_all_fields
 from ..models import *
 from ..schemas import Todo, TodoUpdate, TodoCreate
 from sqlalchemy.orm import Session
@@ -42,10 +42,10 @@ def update_todo(todo_id:int, todo: TodoUpdate, db: Session = Depends(get_db)):
 def filter_todos(field: str, value: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     return read_todo_by_filter(current_user.id, field, value, db) 
 
-@router.patch("/modify/{field}/{value}")
+@router.patch("/update/{field}/{value}")
 def modify_field(todo_id: int, field: str, value: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
-    return test_update_a_todo(todo_id, field, value, db)
+    return update_a_todo(todo_id, field, value, db)
 
-# @router.patch("/modify/{field}/{status}")
-# def modify_field(todo_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
-#     return test_update_a_todo(todo_id, "status", "YESSSSSS", db)
+@router.patch("/edit/")
+def edit_todo_by_all_fields(todo_id: int, todo: Todo,  db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
+    return update_todo_by_all_fields(todo_id, todo, db)
