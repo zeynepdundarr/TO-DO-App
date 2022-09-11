@@ -114,6 +114,7 @@ def update_a_todo(todo_id:int, field:str, value:str, db:Session):
     return db_todo 
 
 def update_todo_by_all_fields(todo_id:int, todo: schemas.TodoUpdate, db:Session):
+    
     db_todo = db.get(models.Todo, todo_id)
     if not db_todo:
         raise HTTPException(status_code=404, detail="Todo is not found")
@@ -148,3 +149,17 @@ def read_todo_by_filter(user_id: int , field:str, val: str, db:Session):
         return db.query(models.Todo).filter(models.Todo.owner_id == user_id, models.Todo.priority ==val).limit(10).all()
     elif field == "schedule":
         return db.query(models.Todo).filter(models.Todo.owner_id == user_id, models.Todo.schedule == val).limit(10).all()
+
+def delete_todo(todo_id:int, db:Session):
+    db_todo = db.get(models.Todo, todo_id)
+    if not db_todo:
+        raise HTTPException(status_code=404, detail="Todo not found")
+    db.delete(db_todo)
+    db.commit()
+    return {"{todo_id} is deleted!": True}
+
+# def delete_all_todos(user_id: int, db:Session):
+#     all_todos = get_todos(db, user_id)
+#     for todo in all_todos:
+#         delete_todo(todo.id, db)
+#     return {"All todos are deleted!": True}
