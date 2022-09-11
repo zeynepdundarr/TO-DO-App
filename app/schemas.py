@@ -1,7 +1,5 @@
-from typing import List, Union, Optional
-from xmlrpc.client import Boolean
-from pydantic import BaseModel, EmailStr, ValidationError, validator, Field
-from typing import List
+from typing import Union
+from pydantic import BaseModel, EmailStr, validator, Field
 
 class TodoBase(BaseModel):
     title: str | None = Field(

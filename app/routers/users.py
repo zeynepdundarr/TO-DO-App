@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from ..DB import get_db
 from ..dependencies import get_token_header
 from .login import get_current_active_user, fake_hash_password
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm
 
 
 router = APIRouter()
