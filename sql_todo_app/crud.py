@@ -1,6 +1,5 @@
 from typing import Any
 from sqlalchemy.orm import Session
-
 from sql_todo_app.internal.admin import update_admin
 from . import models, schemas
 from sqlalchemy import update
@@ -79,8 +78,8 @@ def test_update_a_todo(todo_id:int, field:str, value:str, db:Session):
     if not db_todo:
         raise HTTPException(status_code=404, detail="Todo is not found")
 
+    value = value.lower()
     if field == "status":
-        value = value.lower()
         if value  in ["pending", "done", "in process"]:
             setattr(db_todo, field, value)
         else:
@@ -93,11 +92,7 @@ def test_update_a_todo(todo_id:int, field:str, value:str, db:Session):
             setattr(db_todo, field, False)
         else:
             raise HTTPException(status_code=404, detail="Value is not found")
-
-    elif field == "priority":
-        if value not in ["1", "2", "3", "4", "5"]:
-            raise HTTPException(status_code=404, detail="Value is not found")
-
+    
     elif field == "is_starred":
         if value == "true":
             setattr(db_todo, field, True)
@@ -109,6 +104,18 @@ def test_update_a_todo(todo_id:int, field:str, value:str, db:Session):
     elif field == "category_label":
         value = value.lower()
         if value in ["home", "work", "self", "general"]:
+            setattr(db_todo, field, value)
+        else:
+            raise HTTPException(status_code=404, detail="Value is not found")
+
+    elif field == "priority":
+        if value in ["1", "2", "3", "4", "5"]:
+            setattr(db_todo, field, value)
+        else:
+            raise HTTPException(status_code=404, detail="Value is not found")
+
+    elif field == "schedule":
+        if value in ["today", "tomorrow", "this week", "next week", "this month"]:
             setattr(db_todo, field, value)
         else:
             raise HTTPException(status_code=404, detail="Value is not found")
