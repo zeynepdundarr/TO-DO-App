@@ -53,7 +53,6 @@ class TodoUpdate(TodoBase):
     schedule: Optional[str] = None
     is_starred: Optional[bool] = None
 
-
 class UserBase(BaseModel):
     email: EmailStr
     username: str
@@ -85,6 +84,7 @@ class User(UserBase):
 
 class UserUpdate(User):
     pass
+
 
 class UserInDB(User):
     hashed_password: str

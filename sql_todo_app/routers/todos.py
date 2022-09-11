@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from ..crud import get_user_a_todo, get_user_todos, create_user_todo, update_a_todo, update_user_todo_list
+from ..crud import get_user_a_todo, get_user_todos, create_user_todo, test_update_a_todo 
 from ..models import *
 from ..schemas import Todo, TodoUpdate, TodoCreate
 from sqlalchemy.orm import Session
@@ -11,13 +11,13 @@ from .login import get_current_active_user
 #  check should I include it or not
 #  dependencies=[Depends(get_token_header)],
 router = APIRouter(prefix="/todos", tags=["todos"], responses={404: {"description" : "Not found"}})
-# +
+
 @router.get("/{todo_id}", response_model=Todo)
 def get_a_todo(todo_id=int, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     user_todo_list = get_user_todos(db=db, user_id=current_user.id)
     user_todo_list = [vars(obj) for obj in user_todo_list]
     user_todo_id_list = [x["id"] for x in user_todo_list]
-    if todo_id in user_todo_id_list:
+    if int(todo_id) in user_todo_id_list:
         return get_user_a_todo(db=db, todo_id=todo_id)
     else:
         raise HTTPException(status_code=404, detail="Todo not found!")
@@ -33,7 +33,6 @@ def create_todo_for_user(todo: TodoCreate, db: Session = Depends(get_db),
     create_user_todo(db=db, todo=todo, user_id=current_user.id)
     return get_user_todos(db=db, user_id=current_user.id)
 
-@router.patch("/{todo_id}", response_model=Todo)
-def update_todo(todo_id: int, todo: TodoUpdate, db: Session = Depends(get_db)):
-    return update_a_todo(db=db, todo=todo, todo_id=todo_id)
-
+@router.patch("/modify/", response_model=Todo)
+def test_update_todo(todo_id:int, todo: TodoUpdate, db: Session = Depends(get_db)):
+    return test_update_a_todo(todo_id=todo_id, todo=todo, db=db)
