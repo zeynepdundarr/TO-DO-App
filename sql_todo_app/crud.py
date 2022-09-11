@@ -48,20 +48,8 @@ def get_user_todos(db: Session, user_id: int):
 def get_user_a_todo(db: Session, todo_id: int):
     return db.query(models.Todo).get(todo_id)
 
-def update_a_todo(todo: schemas.TodoUpdate, db: Session, todo_id: int):
-    db_todo = db.get(models.Todo, todo_id)
-    if not db_todo:
-        raise HTTPException(status_code=404, detail="Todo is not found")
-    todo_data = todo.dict(exclude_unset=True)
-    for key, value in todo_data.items():
-        setattr(db_todo, key, value)
-    db.add(db_todo)
-    db.commit()
-    db.refresh(db_todo)
-    return db_todo 
+def update_a_todo(todo_id:int, field:str, value:str, db:Session):      
 
-def update_a_todo(todo_id:int, field:str, value:str, db:Session):
-         
     db_todo = db.get(models.Todo, todo_id)
     if not db_todo:
         raise HTTPException(status_code=404, detail="Todo is not found")
@@ -107,14 +95,15 @@ def update_a_todo(todo_id:int, field:str, value:str, db:Session):
             setattr(db_todo, field, value)
         else:
             raise HTTPException(status_code=404, detail="Value is not found")
+    else:
+        setattr(db_todo, field, value)
 
     db.add(db_todo)
     db.commit()
     db.refresh(db_todo)
     return db_todo 
 
-def update_todo_by_all_fields(todo_id:int, todo: schemas.TodoUpdate, db:Session):
-    
+def update_todo_by_all_fields(todo_id:int, todo: schemas.Todo, db:Session):
     db_todo = db.get(models.Todo, todo_id)
     if not db_todo:
         raise HTTPException(status_code=404, detail="Todo is not found")
