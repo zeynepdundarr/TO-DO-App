@@ -49,3 +49,7 @@ def modify_field(todo_id: int, field: str, value: str, db: Session = Depends(get
 @router.patch("/edit/")
 def edit_todo_by_all_fields(todo_id: int, todo: Todo,  db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     return update_todo_by_all_fields(todo_id, todo, db)
+
+@router.patch("/mark_as_done/{todo_id}")
+def mark_todo_as_done(todo_id: int, db: Session = Depends(get_db)):
+    return update_a_todo(todo_id, "is_ticked", "True", db)
