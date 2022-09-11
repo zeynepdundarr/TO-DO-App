@@ -1,6 +1,6 @@
 from tkinter.filedialog import test
 from fastapi import APIRouter, Depends, HTTPException
-from ..crud import get_user_a_todo, get_user_todos, create_user_todo, update_a_todo, update_a_todo, read_todo_by_filter, update_todo_by_all_fields
+from ..crud import *
 from ..models import *
 from ..schemas import Todo, TodoUpdate, TodoCreate
 from sqlalchemy.orm import Session
@@ -47,9 +47,17 @@ def modify_field(todo_id: int, field: str, value: str, db: Session = Depends(get
     return update_a_todo(todo_id, field, value, db)
 
 @router.patch("/edit/")
-def edit_todo_by_all_fields(todo_id: int, todo: Todo,  db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
+def edit_todo_by_all_fields(todo_id: int, todo: Todo,  db: Session = Depends(get_db)):
     return update_todo_by_all_fields(todo_id, todo, db)
 
 @router.patch("/mark_as_done/{todo_id}")
 def mark_todo_as_done(todo_id: int, db: Session = Depends(get_db)):
     return update_a_todo(todo_id, "is_ticked", "True", db)
+
+@router.delete("/todos/delete/{todo_id}")
+def delete_a_todo(todo_id: int, db: Session = Depends(get_db)):
+    delete_todo(todo_id, db)
+
+@router.delete("/todos/delete/all/")
+def delete_all_user_todos(db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
+    delete_all_todos(user_id=current_user.id, db=db)

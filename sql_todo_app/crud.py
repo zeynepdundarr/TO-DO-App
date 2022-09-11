@@ -158,8 +158,8 @@ def delete_todo(todo_id:int, db:Session):
     db.commit()
     return {"{todo_id} is deleted!": True}
 
-# def delete_all_todos(user_id: int, db:Session):
-#     all_todos = get_todos(db, user_id)
-#     for todo in all_todos:
-#         delete_todo(todo.id, db)
-#     return {"All todos are deleted!": True}
+def delete_all_todos(user_id: int, db:Session):
+    all_todos = get_todos(db, user_id)
+    for todo in all_todos:
+        delete_todo(todo.id, db)
+    return {"All todos are deleted!": True}
