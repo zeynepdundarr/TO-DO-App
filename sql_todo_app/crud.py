@@ -61,7 +61,7 @@ def update_a_todo(todo: schemas.TodoUpdate, db: Session, todo_id: int):
     db.refresh(db_todo)
     return db_todo 
 
-def test_update_a_todo(todo_id:int, todo: schemas.TodoUpdate, db:Session):
+def update_a_todo(todo_id:int, todo: schemas.TodoUpdate, db:Session):
     print("what is todo in inputs: ", todo)
     db_todo = db.get(models.Todo, todo_id)
     if not db_todo:
