@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from ..crud import get_user_a_todo, get_user_todos, create_user_todo, update_a_todo 
+from ..crud import get_user_a_todo, get_user_todos, create_user_todo, update_a_todo, read_todo_by_filter
 from ..models import *
 from ..schemas import Todo, TodoUpdate, TodoCreate
 from sqlalchemy.orm import Session
@@ -36,3 +36,9 @@ def create_todo_for_user(todo: TodoCreate, db: Session = Depends(get_db),
 @router.patch("/modify/", response_model=Todo)
 def update_todo(todo_id:int, todo: TodoUpdate, db: Session = Depends(get_db)):
     return update_a_todo(todo_id=todo_id, todo=todo, db=db)
+    
+@router.get("/filter/{field}/{value}")
+def filter_todos(field: str, value: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
+    return read_todo_by_filter(current_user.id, field, value, db) 
+    
+

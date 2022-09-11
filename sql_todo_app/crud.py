@@ -62,7 +62,6 @@ def update_a_todo(todo: schemas.TodoUpdate, db: Session, todo_id: int):
     return db_todo 
 
 def update_a_todo(todo_id:int, todo: schemas.TodoUpdate, db:Session):
-    print("what is todo in inputs: ", todo)
     db_todo = db.get(models.Todo, todo_id)
     if not db_todo:
         raise HTTPException(status_code=404, detail="Todo is not found")
@@ -73,3 +72,23 @@ def update_a_todo(todo_id:int, todo: schemas.TodoUpdate, db:Session):
     db.commit()
     db.refresh(db_todo)
     return db_todo 
+
+def read_todo_by_filter(user_id: int , field:str, val: str, db:Session):
+    if field == "status":
+        return db.query(models.Todo).filter(models.Todo.owner_id == user_id, models.Todo.status == val).limit(10).all()
+    elif field == "is_ticked":
+        if val == "true":
+            return db.query(models.Todo).filter(models.Todo.owner_id == user_id, models.Todo.is_ticked == True).limit(10).all()
+        elif val == "false":
+            return db.query(models.Todo).filter(models.Todo.owner_id == user_id, models.Todo.is_ticked == False).limit(10).all()
+        else: 
+            raise HTTPException(status_code=404, detail="field_val format is wrong")    
+    elif field == "priority":
+        return db.query(models.Todo).filter(models.Todo.owner_id == user_id, models.Todo.priority ==val).limit(10).all()
+    elif field == "is_starred":
+        if val == "true":
+            return db.query(models.Todo).filter(models.Todo.owner_id == user_id, models.Todo.is_starred == True).limit(10).all()
+        elif val == "false":
+            return db.query(models.Todo).filter(models.Todo.owner_id == user_id, models.Todo.is_starred == False).limit(10).all()
+        else: 
+            raise HTTPException(status_code=404, detail="field_val format is wrong")    
