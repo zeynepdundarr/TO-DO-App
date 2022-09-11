@@ -8,7 +8,7 @@ from ..DB import get_db
 from ..database import *
 from typing import List
 from ..dependencies import get_token_header
-from .login import get_current_active_user
+from ..login import get_current_active_user
 
 #  check should I include it or not
 #  dependencies=[Depends(get_token_header)],
