@@ -25,7 +25,7 @@ TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engin
 Base.metadata.create_all(bind=engine)
 
 username = "Zeynep52"
-password = "notreallyhashedZeynep52"+username
+password = username
 email = username+"@example.com"
 a_user_json = {"email": email, 
                 "username": username,
@@ -41,7 +41,20 @@ def override_get_db():
 app.dependency_overrides[get_db] = override_get_db
 client = TestClient(app)
 
-def test_register():
-    response = client.post("/users/", json=a_user_json)
-    assert response.status_code == 201, response.text
+# def test_register():
+#     response = client.post("/users/", json=a_user_json)
+#     assert response.status_code == 201, response.text
 
+
+def test_user_login():
+
+    user_form_data = {"grant_type": "password",
+                      "username": username,
+                      "password": password,
+                      "scope": "",
+                      "client_id": "",
+                      "client_secret": ""}
+    response = client.post("/token", data=user_form_data, headers={"content-type": "application/x-www-form-urlencoded"})
+    print("Test 1 - response.json: ", response.json)
+    response.json
+    assert response.status_code == 200, response.text
