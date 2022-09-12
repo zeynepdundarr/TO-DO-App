@@ -1,6 +1,8 @@
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
+from app.login import fake_decode_token
 from .main import app
 from .DB import get_db
 from .database import Base
@@ -10,6 +12,8 @@ from .schemas import UserCreate
 from .routers import users
 from .models import User
 from sqlalchemy.orm import Session, scoped_session
+import platform
+
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 
@@ -20,6 +24,13 @@ TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engin
 
 Base.metadata.create_all(bind=engine)
 
+username = "Zeynep52"
+password = "notreallyhashedZeynep52"+username
+email = username+"@example.com"
+a_user_json = {"email": email, 
+                "username": username,
+                "password": password}
+
 def override_get_db():
     try:
         db = TestingSessionLocal()
@@ -28,16 +39,9 @@ def override_get_db():
         db.close()
 
 app.dependency_overrides[get_db] = override_get_db
-
 client = TestClient(app)
-db = override_get_db()
+
 def test_register():
-
-    a_user_json = {"email": "testing2@example.com", 
-                   "username": "zeynep2",
-                   "password":"zeynep"}
-
     response = client.post("/users/", json=a_user_json)
-    print("TEST 0 - response", response)
-    print("TEST 1 - response.status_code", response.status_code)
     assert response.status_code == 201, response.text
+
