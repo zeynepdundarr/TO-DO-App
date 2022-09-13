@@ -37,7 +37,9 @@ create_todo_header = {"accept": "application/json",
                         "content-type": "application/json"}
 
 get_todo_header = {"accept": "application/json",
-                   "authorization": f"Bearer {username}"}
+                   "Authorization": f"Bearer {username}"}
+
+
 
 def override_get_db():
     try:
@@ -58,4 +60,9 @@ todo_id = 12
 def test_get_a_todo():
     client.post("/todos/create/", json=a_todo, headers=create_todo_header)
     response = client.get(f"/todos/{todo_id}", headers=get_todo_header)
+    assert response.status_code == 200, response.text
+
+def test_get_todos_for_user():
+    
+    response = client.get("/todos/all/", headers=get_todo_header)
     assert response.status_code == 200, response.text
