@@ -6,8 +6,6 @@ from .crud import *
 from .schemas import *
 from .database import SessionLocal
 from . import DB
-# from . import schemas 
-# import User, UserInDB
 
 router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")

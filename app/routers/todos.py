@@ -9,10 +9,10 @@ from typing import List
 from ..dependencies import get_token_header
 from ..login import get_current_active_user
 
-#  check should I include it or not
-#  dependencies=[Depends(get_token_header)],
-router = APIRouter(prefix="/todos", tags=["todos"], responses={404: {"description" : "Not found"}})
+# TODO: delete later
+from fastapi.security import OAuth2PasswordBearer
 
+router = APIRouter(prefix="/todos", tags=["todos"], responses={404: {"description" : "Not found"}})
 @router.get("/{todo_id}", response_model=Todo)
 def get_a_todo(todo_id=int, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     user_todo_list = get_user_todos(db=db, user_id=current_user.id)
@@ -28,7 +28,7 @@ def get_todos_for_user(db: Session = Depends(get_db),
 current_user: User = Depends(get_current_active_user)):
     return get_user_todos(db=db, user_id=current_user.id)
 
-@router.post("/create/", response_model=List[Todo])
+@router.post("/create/", response_model=List[Todo], status_code=201)
 def create_todo_for_user(todo: TodoCreate, db: Session = Depends(get_db), 
     current_user: User = Depends(get_current_active_user)):
     create_user_todo(db=db, todo=todo, user_id=current_user.id)
