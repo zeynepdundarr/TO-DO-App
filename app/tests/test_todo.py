@@ -39,7 +39,6 @@ create_todo_header = {"accept": "application/json",
 get_todo_header = {"accept": "application/json",
                    "Authorization": f"Bearer {username}"}
 
-update_todo_header = {"accept": "application/json"}
 
 
 def override_get_db():
@@ -83,5 +82,10 @@ def test_modify_field():
 
 def test_mark_as_done():
     todo_id = 6
-    response = client.patch(f"/todos/mark_as_done/{todo_id}", headers=update_todo_header)
+    response = client.patch(f"/todos/mark_as_done/{todo_id}", headers=get_todo_header)
+    assert response.status_code == 200, response.text
+
+def test_delete_a_todo():
+    todo_id = 16
+    response = client.delete(f"/todos/delete/{todo_id}", headers=get_todo_header)
     assert response.status_code == 200, response.text
