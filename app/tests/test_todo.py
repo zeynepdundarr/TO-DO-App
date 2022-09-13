@@ -63,6 +63,13 @@ def test_get_a_todo():
     assert response.status_code == 200, response.text
 
 def test_get_todos_for_user():
-    
     response = client.get("/todos/all/", headers=get_todo_header)
     assert response.status_code == 200, response.text
+
+
+def test_filter_todos():
+    field = "category_label"
+    value = "self"
+    response = client.get(f"/todos/filter/{field}/{value}", headers=get_todo_header)
+    assert response.status_code == 200, response.text
+
