@@ -36,8 +36,8 @@ create_todo_header = {"accept": "application/json",
                         "authorization": f"Bearer {username}",
                         "content-type": "application/json"}
 
-get_todo_header = {"accept": "application/json",
-                   "Authorization": f"Bearer {username}"}
+authentication_header = {"accept": "application/json",
+                        "Authorization": f"Bearer {username}"}
 
 
 
@@ -59,33 +59,41 @@ def test_create_todo_for_user():
 def test_get_a_todo():
     todo_id = 12
     client.post("/todos/create/", json=a_todo, headers=create_todo_header)
-    response = client.get(f"/todos/{todo_id}", headers=get_todo_header)
+    response = client.get(f"/todos/{todo_id}", headers=authentication_header)
     assert response.status_code == 200, response.text
 
 def test_get_todos_for_user():
-    response = client.get("/todos/all/", headers=get_todo_header)
+    response = client.get("/todos/all/", headers=authentication_header)
     assert response.status_code == 200, response.text
-
 
 def test_filter_todos():
     field = "category_label"
     value = "self"
-    response = client.get(f"/todos/filter/{field}/{value}", headers=get_todo_header)
+    response = client.get(f"/todos/filter/{field}/{value}", headers=authentication_header)
     assert response.status_code == 200, response.text
 
 def test_modify_field():
     todo_id = 6
     field = "category_label"
     value = "home"
-    response = client.patch(f"/todos/update/{todo_id}/{field}/{value}", headers=get_todo_header)
+    response = client.patch(f"/todos/update/{todo_id}/{field}/{value}", headers=authentication_header)
     assert response.status_code == 200, response.text
 
 def test_mark_as_done():
     todo_id = 6
-    response = client.patch(f"/todos/mark_as_done/{todo_id}", headers=get_todo_header)
+    response = client.patch(f"/todos/mark_as_done/{todo_id}", headers=authentication_header)
     assert response.status_code == 200, response.text
 
 def test_delete_a_todo():
-    todo_id = 16
-    response = client.delete(f"/todos/delete/{todo_id}", headers=get_todo_header)
+    todo_id = 60
+    response = client.delete(f"/todos/delete/{todo_id}", headers=authentication_header)
     assert response.status_code == 200, response.text
+
+def test_delete_all_user_todos():
+    response = client.delete("/todos/delete/all/", headers=authentication_header)
+    assert response.status_code == 200, response.text
+
+# def test_edit_todo_by_all_fields():
+#     todo_id = 7
+#     response = client.patch(f"/todos/edit/{todo_id}/", headers=authentication_header)
+#     assert response.status_code == 200, response.text
