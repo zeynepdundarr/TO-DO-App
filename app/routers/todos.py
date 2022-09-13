@@ -9,9 +9,8 @@ from typing import List
 from ..dependencies import get_token_header
 from ..login import get_current_active_user
 
-# TODO: delete later
-from fastapi.security import OAuth2PasswordBearer
 
+# TODO: fix it
 router = APIRouter(prefix="/todos", tags=["todos"], responses={404: {"description" : "Not found"}})
 @router.get("/{todo_id}", response_model=Todo)
 def get_a_todo(todo_id=int, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
@@ -39,8 +38,9 @@ def filter_todos(field: str, value: str, db: Session = Depends(get_db), current_
     return read_todo_by_filter(current_user.id, field, value, db) 
 
 @router.patch("/update/{todo_id}/{field}/{value}")
-def modify_field(todo_id: int, field: str, value: str, db: Session = Depends(get_db)):
-    return update_a_todo(todo_id, field, value, db)
+def modify_field(todo_id: int, field: str, value: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
+    if current_user:
+        return update_a_todo(todo_id, field, value, db)
 
 @router.patch("/edit/{todo_id}")
 def edit_todo_by_all_fields(todo_id: int, todo: Todo,  db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
