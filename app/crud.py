@@ -26,7 +26,7 @@ def create_user(db: Session, user: schemas.UserCreate):
     db.refresh(db_user)
     return db_user
 
-def get_todos(db: Session, user_id: int, skip: int = 0, limit: int = 10):
+def get_todos(db: Session, user_id: int, skip: int = 0, limit: int = 100):
     return db.query(models.Todo).filter(models.Todo.owner_id == user_id).limit(limit).all()
 
 def create_user_todo(db: Session, todo: schemas.TodoCreate, user_id: int):
@@ -78,3 +78,18 @@ def delete_all_todos(user_id: int, db:Session):
     for todo in all_todos:
         delete_todo(todo.id, db)
     return {"All todos are deleted!": True}
+
+def delete_a_user(db:Session, user_id: int):
+    db_user = db.get(models.User, user_id)
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+    db.delete(db_user)
+    db.commit()
+
+def delete_all_users(db:Session):
+    try:
+        num_rows_deleted = db.query(models.User).delete()
+        print("TEST 1: number of rows deleted: ", num_rows_deleted )
+        db.commit()
+    except:
+        db.rollback()

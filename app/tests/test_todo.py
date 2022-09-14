@@ -57,23 +57,12 @@ create_todo_header = {"accept": "application/json",
 authentication_header = {"accept": "application/json",
                         "Authorization": f"Bearer {username}"}
 
-# @pytest.fixture()
-# def test_db():
-#     print("\nDB create_all")
-#     Base.metadata.create_all(bind=engine)
-#     yield
-#     #print("DB drop_all")
-#     #Base.metadata.drop_all(bind=engine)
-
-#@pytest.fixture()
 def set_db():
-    # create a user and a todo for every test
     client.post("/users/", json=a_user_json)
     client.post("/token", data=user_form_data, headers={"content-type": "application/x-www-form-urlencoded"})
     client.post("/todos/create/", json=a_todo, headers=create_todo_header)
 
 def clean_db():
-    # change cleaning db approach later
     client.delete("/todos/delete/all/", headers=authentication_header)
     client.delete("/users/delete/all/")
 

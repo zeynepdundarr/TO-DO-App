@@ -25,7 +25,9 @@ def filter_and_get_todo(user_id: int , field:str, val: str, db:Session, todo: mo
         return db.query(models.Todo).filter(models.Todo.owner_id == user_id, models.Todo.priority ==val).limit(10).all()
     elif field == "schedule":
         return db.query(models.Todo).filter(models.Todo.owner_id == user_id, models.Todo.schedule == val).limit(10).all()
-
+    else:
+        return HTTPException(status_code=404, detail="Value is not found")
+        
 def update_a_todo_util(todo_id:int, field:str, value:str, db:Session):
     db_todo = db.get(models.Todo, todo_id)
     if not db_todo:

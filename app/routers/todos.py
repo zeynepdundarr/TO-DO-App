@@ -49,13 +49,17 @@ def edit_todo_by_all_fields(todo_id: int, todo: Todo,  db: Session = Depends(get
     return update_todo_by_all_fields(todo_id, todo, db)
 
 @router.patch("/mark_as_done/{todo_id}")
-def mark_todo_as_done(todo_id: int, db: Session = Depends(get_db)):
-    return update_a_todo(todo_id, "is_ticked", "True", db)
+def mark_todo_as_done(todo_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
+    if current_user:
+        return update_a_todo(todo_id, "is_ticked", "True", db)
 
-@router.delete("/todos/delete/{todo_id}")
-def delete_a_todo(todo_id: int, db: Session = Depends(get_db)):
-    delete_todo(todo_id, db)
+@router.delete("/delete/{todo_id}")
+def delete_a_todo(todo_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
+    if current_user:
+        return delete_todo(todo_id, db)
 
-@router.delete("/todos/delete/all/")
+@router.delete("/delete/all/")
 def delete_all_user_todos(db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
-    delete_all_todos(user_id=current_user.id, db=db)
+    if current_user:
+        return delete_all_todos(user_id=current_user.id, db=db)
+
