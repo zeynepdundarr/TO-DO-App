@@ -17,7 +17,7 @@ TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engin
 
 Base.metadata.create_all(bind=engine)
 
-username = "Zeynep54"
+username = "Zeynep55"
 password = username
 email = username+"@example.com"
 a_user_json = {"email": email, 
@@ -52,6 +52,7 @@ def test_user_login():
 def test_read_user_me():
     client.post("/token", data=user_form_data)
     response = client.get("/users/me", headers={"Authorization": f"Bearer {user_form_data['username']}", "accept": "application/json"})
+    print("TEST 1 - check if a user exists: ", response.__dict__)
     assert response.status_code == 200, response.text
 
 
