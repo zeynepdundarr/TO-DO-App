@@ -2,20 +2,22 @@ from . import models
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 
-def filter_and_get_todo(user_id: int , field:str, val: str, db:Session, todo: models.Todo):
+def filter_and_get_todo(user_id: int , field:str, val: str , db:Session, todo: models.Todo):
+    field = field.lower()
+    val = val.lower() 
     if field == "status":
         return db.query(models.Todo).filter(models.Todo.owner_id == user_id, models.Todo.status == val).limit(10).all()
     elif field == "is_ticked":
-        if val == "true":
+        if val == "true" or val == True:
             return db.query(models.Todo).filter(models.Todo.owner_id == user_id, models.Todo.is_ticked == True).limit(10).all()
-        elif val == "false":
+        elif val == "false" or val == False:
             return db.query(models.Todo).filter(models.Todo.owner_id == user_id, models.Todo.is_ticked == False).limit(10).all()
         else: 
             raise HTTPException(status_code=404, detail="field_val format is wrong")
     elif field == "is_starred":
-        if val == "true":
+        if val == "true" or val == True:
             return db.query(models.Todo).filter(models.Todo.owner_id == user_id, models.Todo.is_starred == True).limit(10).all()
-        elif val == "false":
+        elif val == "false" or val == False:
             return db.query(models.Todo).filter(models.Todo.owner_id == user_id, models.Todo.is_starred == False).limit(10).all()
         else: 
             raise HTTPException(status_code=404, detail="field_val format is wrong")    
@@ -76,5 +78,4 @@ def update_a_todo_util(todo_id:int, field:str, value:str, db:Session):
             raise HTTPException(status_code=404, detail="Value is not found")
     else:
         setattr(db_todo, field, value)
-
     return db_todo

@@ -23,14 +23,12 @@ class TodoCreate(TodoBase):
             raise ValueError('Title must not exceed 100 characters!')
         return v.title()
 
-
 class Todo(TodoBase):
     id: int
     owner_id: int
 
     class Config:
         orm_mode = True
-
 
 class UserBase(BaseModel):
     email: EmailStr

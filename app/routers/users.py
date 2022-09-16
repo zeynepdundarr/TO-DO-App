@@ -33,6 +33,7 @@ async def login(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestF
     if not user_dict:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     user = UserInDB(**user_dict)
+    #user = UserInDB(user_dict)
     hashed_password = fake_hash_password(form_data.password)
 
     if not hashed_password == user.hashed_password:

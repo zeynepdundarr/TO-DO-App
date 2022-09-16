@@ -37,4 +37,3 @@ class Todo(Base):
 
     owner = relationship("User", back_populates="user_todo")
     owner_id = Column(Integer, ForeignKey("Users.id"))
-

@@ -40,6 +40,9 @@ def create_user_todo(db: Session, todo: schemas.TodoCreate, user_id: int):
 def get_user_todos(db: Session, user_id: int):
     return db.query(models.Todo).filter(models.Todo.owner_id == user_id).limit(50).all()
 
+def get_user_last_todo(db: Session, user_id: int):
+    return db.query(models.Todo).filter(models.Todo.owner_id == user_id).order_by(models.Todo.id.desc()).first()
+
 def get_user_a_todo(db: Session, todo_id: int):
     return db.query(models.Todo).get(todo_id)
 
@@ -93,3 +96,5 @@ def delete_all_users(db:Session):
         db.commit()
     except:
         db.rollback()
+
+
