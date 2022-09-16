@@ -91,19 +91,27 @@ def test_filter_todos():
             assert str(obj[field]) == value
     clean_db()
     
-# def test_modify_field():
-#     set_db()
-#     field = "category_label"
-#     value = "home"
-#     response = client.patch(f"/todos/update/{todo_id}/{field}/{value}", headers=Constants.authentication_header)
-#     clean_db()
-#     assert response.status_code == 200, response.text
+def test_modify_field():
+    set_db()
+    create_multiple_todos()
+    field = "category_label"
+    value = "home"
+    response = client.patch(f"/todos/update/{Constants.modify_todo_id}/{field}/{value}", headers=Constants.authentication_header)
+    clean_db()
+    response_list = response.json()
+    if isinstance(response_list, dict):
+        res = response_list
+        assert res[field] == value
+    assert response.status_code == 200, response.text
 
-# def test_mark_as_done():
-#     set_db()
-#     response = client.patch(f"/todos/mark_as_done/{todo_id}", headers=Constants.authentication_header)
-#     clean_db()
-#     assert response.status_code == 200, response.text
+def test_mark_as_done():
+    set_db()
+    create_multiple_todos()
+    response = client.patch(f"/todos/mark_as_done/{Constants.todo_id}", headers=Constants.authentication_header)
+    clean_db()
+    response_data = response.json()
+    assert response_data["is_ticked"] == True
+    assert response.status_code == 200, response.text
 
 # def test_delete_a_todo():
 #     set_db()
