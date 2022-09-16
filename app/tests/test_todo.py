@@ -55,7 +55,7 @@ def test_get_a_todo():
     clean_db()
     assert response.status_code == 200, response.text    
     assert response.json() == Constants.a_todo_1
-x
+
 # def test_get_todos_for_user():
 #     set_db()
 #     response = client.get("/todos/all/", headers=authentication_header)
