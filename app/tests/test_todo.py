@@ -113,18 +113,25 @@ def test_mark_as_done():
     assert response_data["is_ticked"] == True
     assert response.status_code == 200, response.text
 
-# def test_delete_a_todo():
-#     set_db()
-#     response = client.delete(f"/todos/delete/{todo_id}", headers=Constants.authentication_header)
-#     clean_db()
-#     assert response.status_code == 200, response.text
+def test_delete_a_todo():
+    set_db()
+    response = client.delete(f"/todos/delete/{Constants.todo_id}", headers=Constants.authentication_header)
+    response = client.get("/todos/all/", headers=Constants.authentication_header)
+    response_list = response.json()
 
-# def test_delete_all_user_todos():
-#     set_db()
-#     response = client.delete("/todos/delete/all/", headers=Constants.authentication_header)
-#     clean_db()
-#     assert response.status_code == 200, response.text
+    if isinstance(response_list, dict):
+        obj = response_list 
+        assert obj["id"] != Constants.todo_id
+    for obj in response_list:
+        assert obj["id"] != Constants.todo_id
+    clean_db()
+    assert response.status_code == 200, response.text
 
+def test_delete_all_user_todos():
+    set_db()
+    response = client.delete("/todos/delete/all/", headers=Constants.authentication_header)
+    response = client.get("/todos/all/", headers=Constants.authentication_header)
+    assert response.json()== [], response.text
 
 def create_multiple_todos():
     client.post("/todos/create/", json=Constants.a_todo_1, headers=Constants.create_todo_header)
