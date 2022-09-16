@@ -1,14 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
 from ..crud import *
 from ..models import *
-from ..schemas import Todo, TodoCreate
+from ..schemas import Todo, TodoCreate, TodoBase
 from sqlalchemy.orm import Session
 from ..DB import get_db
 from ..database import *
 from typing import List
 from ..dependencies import get_token_header
 from ..login import get_current_active_user
-
 
 # TODO: fix it
 router = APIRouter(prefix="/todos", tags=["todos"], responses={404: {"description" : "Not found"}})
@@ -27,11 +26,11 @@ def get_todos_for_user(db: Session = Depends(get_db),
 current_user: User = Depends(get_current_active_user)):
     return get_user_todos(db=db, user_id=current_user.id)
 
-@router.post("/create/", response_model=List[Todo], status_code=201)
+@router.post("/create/", response_model=Todo, status_code=201)
 def create_todo_for_user(todo: TodoCreate, db: Session = Depends(get_db), 
     current_user: User = Depends(get_current_active_user)):
     create_user_todo(db=db, todo=todo, user_id=current_user.id)
-    return get_user_todos(db=db, user_id=current_user.id)
+    return get_user_last_todo(db=db, user_id=current_user.id)
 
 @router.get("/filter/{field}/{value}")
 def filter_todos(field: str, value: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
