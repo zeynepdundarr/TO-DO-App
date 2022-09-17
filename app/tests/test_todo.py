@@ -30,8 +30,8 @@ app.dependency_overrides[get_db] = override_get_db
 client = TestClient(app)
 
 def set_db():
-    client.post("/users/", json=Constants.a_user_json_1)
-    client.post("/token", data=Constants.user_form_data_1, headers={"content-type": "application/x-www-form-urlencoded"})
+    client.post("/users/", json=Constants.a_user_json)
+    client.post("/token", data=Constants.a_user_form_data, headers={"content-type": "application/x-www-form-urlencoded"})
 
 def clean_db():
     client.delete("/todos/delete/all/", headers=Constants.authentication_header)
@@ -45,21 +45,21 @@ def test_db():
     Base.metadata.drop_all(bind=engine)
 
 def test_create_todo_for_user(test_db):
-    response = client.post("/todos/create/", json=Constants.a_todo_1, headers=Constants.create_todo_header)
+    response = client.post("/todos/create/", json=Constants.a_todo_1, headers=Constants.authentication_header)
     assert response.status_code == 201, response.text
     assert response.json() == Constants.a_todo_1
 
 def test_get_a_todo(test_db):
-    client.post("/todos/create/", json=Constants.a_todo_1, headers=Constants.create_todo_header)
+    client.post("/todos/create/", json=Constants.a_todo_1, headers=Constants.authentication_header)
     response = client.get(f"/todos/{str(Constants.todo_id)}/", headers=Constants.authentication_header)
     assert response.status_code == 200, response.text    
     assert response.json() == Constants.a_todo_1
 
 def test_get_todos_for_user(test_db):
     no_of_todos = 3
-    client.post("/todos/create/", json=Constants.a_todo_1, headers=Constants.create_todo_header)
-    client.post("/todos/create/", json=Constants.a_todo_2, headers=Constants.create_todo_header)
-    client.post("/todos/create/", json=Constants.a_todo_3, headers=Constants.create_todo_header)
+    client.post("/todos/create/", json=Constants.a_todo_1, headers=Constants.authentication_header)
+    client.post("/todos/create/", json=Constants.a_todo_2, headers=Constants.authentication_header)
+    client.post("/todos/create/", json=Constants.a_todo_3, headers=Constants.authentication_header)
     response = client.get("/todos/", headers=Constants.authentication_header)
 
     todo_length = len(response.json())
@@ -122,6 +122,6 @@ def test_delete_all_user_todos(test_db):
     assert response.json()== [], response.text
 
 def create_multiple_todos():
-    client.post("/todos/create/", json=Constants.a_todo_1, headers=Constants.create_todo_header)
-    client.post("/todos/create/", json=Constants.a_todo_2, headers=Constants.create_todo_header)
-    client.post("/todos/create/", json=Constants.a_todo_3, headers=Constants.create_todo_header)
+    client.post("/todos/create/", json=Constants.a_todo_1, headers=Constants.authentication_header)
+    client.post("/todos/create/", json=Constants.a_todo_2, headers=Constants.authentication_header)
+    client.post("/todos/create/", json=Constants.a_todo_3, headers=Constants.authentication_header)
