@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from ..crud import get_user_by_email, get_user_by_username, create_user, delete_all_users
-from ..models import *
+from ..crud import get_user_by_email, get_user_by_username, create_user
 from ..schemas import UserCreate, User, UserInDB
 from sqlalchemy.orm import Session
 from ..login import fake_hash_password, get_current_active_user
@@ -38,9 +37,3 @@ async def login(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestF
     if not hashed_password == user.hashed_password:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     return {"access_token": user.username, "token_type": "bearer"}
-
-# TODO: Delete it later - only for test purposes
-@router.delete("/users/delete/all/")
-async def delete_users(db: Session = Depends(get_db)):
-    delete_all_users(db=db)
-
