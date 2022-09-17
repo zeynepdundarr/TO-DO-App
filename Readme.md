@@ -40,19 +40,3 @@ docker run <test-image-name>
 ## Web routes
 All routes can be accessed on /docs or /redoc paths with Swagger or Redoc.
 
-## Project Structure - MODIFY
-app
-├── api              
-│   ├── dependencies
-│   ├── errors       
-│   └── routes      
-├── core             
-├── db               
-│   ├── migrations  
-│   └── repositories 
-├── models          
-│   ├── domain       
-│   └── schemas      
-├── resources        
-├── services        
-└── main.py         
