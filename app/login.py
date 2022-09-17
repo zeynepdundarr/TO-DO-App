@@ -1,11 +1,9 @@
-from typing import Union
-from fastapi import Depends, APIRouter, FastAPI, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi import Depends, APIRouter, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
 from . import crud
 from .crud import *
 from .schemas import *
-from .database import SessionLocal
-from . import DB
+from .DB import get_db
 
 router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -21,7 +19,7 @@ def fake_decode_token(db, token):
     user = get_user(db, token)
     return user
 
-async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(DB.get_db)):
+async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     user = fake_decode_token(db, token)
     if not user:
         raise HTTPException(

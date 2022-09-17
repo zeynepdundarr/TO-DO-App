@@ -2,6 +2,8 @@ from . import models
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 
+todo_limit = 50
+
 def filter_and_get_todo(user_id: int , field:str, val: str , db:Session, todo: models.Todo):
     field = field.lower()
     val = val.lower() 
