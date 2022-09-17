@@ -2,7 +2,6 @@ from sqlalchemy.orm import Session
 from . import models, schemas, utils
 from fastapi import HTTPException
 
-
 def get_user(db: Session, user_id: int):
     return db.query(models.User).filter(models.User.id == user_id).first()
 
@@ -88,13 +87,5 @@ def delete_a_user(db:Session, user_id: int):
         raise HTTPException(status_code=404, detail="User not found")
     db.delete(db_user)
     db.commit()
-
-def delete_all_users(db:Session):
-    try:
-        num_rows_deleted = db.query(models.User).delete()
-        print("TEST 1: number of rows deleted: ", num_rows_deleted )
-        db.commit()
-    except:
-        db.rollback()
 
 
