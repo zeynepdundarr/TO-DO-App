@@ -37,6 +37,6 @@ docker build -t <test-image-name> .
 docker run <test-image-name>
 ```
 
-## Web routes
+## Web Routes
 All routes can be accessed on /docs or /redoc paths with Swagger or Redoc.
 
