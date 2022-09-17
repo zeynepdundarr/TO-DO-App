@@ -33,7 +33,6 @@ class Todo(TodoBase):
 class UserBase(BaseModel):
     email: EmailStr
     username: str
-
     @validator('username')
     def username_alphanumeric(cls, v):
         if not v.isalnum():
