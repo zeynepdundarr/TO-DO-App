@@ -4,6 +4,7 @@ from . import crud
 from .crud import *
 from .schemas import *
 from .DB import get_db
+import logging 
 
 router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")

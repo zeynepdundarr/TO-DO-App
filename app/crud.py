@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from . import models, schemas, utils
 from fastapi import HTTPException
+import logging
 
 def get_user(db: Session, user_id: int):
     return db.query(models.User).filter(models.User.id == user_id).first()
@@ -23,6 +24,7 @@ def create_user(db: Session, user: schemas.UserCreate):
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
+    logging.info("User is created!")
     return db_user
 
 def get_todos(db: Session, user_id: int, skip: int = 0, limit: int = 100):
@@ -34,6 +36,7 @@ def create_user_todo(db: Session, todo: schemas.TodoCreate, user_id: int):
     db.add(db_todo)
     db.commit()
     db.refresh(db_todo)
+    logging.info("A todo is created!")
     return db_todo
 
 def get_user_todos(db: Session, user_id: int):
@@ -50,6 +53,7 @@ def update_a_todo(todo_id:int, field:str, value:str, db:Session):
     db.add(db_todo)
     db.commit()
     db.refresh(db_todo)
+    logging.info("Todo is updated!")
     return db_todo 
 
 def update_todo_by_all_fields(todo_id:int, todo: schemas.Todo, db:Session):
@@ -62,6 +66,7 @@ def update_todo_by_all_fields(todo_id:int, todo: schemas.Todo, db:Session):
     db.add(db_todo)
     db.commit()
     db.refresh(db_todo)
+    logging.info("Fields are updated!")
     return db_todo 
 
 def read_todo_by_filter(user_id: int , field:str, val: str, db:Session):
@@ -79,13 +84,5 @@ def delete_all_todos(user_id: int, db:Session):
     all_todos = get_todos(db, user_id)
     for todo in all_todos:
         delete_todo(todo.id, db)
+    logging.info("All todos are deleted!")
     return {"All todos are deleted!": True}
-
-def delete_a_user(db:Session, user_id: int):
-    db_user = db.get(models.User, user_id)
-    if not db_user:
-        raise HTTPException(status_code=404, detail="User not found")
-    db.delete(db_user)
-    db.commit()
-
-

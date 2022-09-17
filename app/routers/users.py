@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from ..login import fake_hash_password, get_current_active_user
 from fastapi.security import OAuth2PasswordRequestForm
 from ..DB import get_db
+import logging
 
 router = APIRouter(tags=["users"], responses={404: {"description" : "User not found"}})
 
@@ -28,7 +29,6 @@ async def login(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestF
     if user_obj is None:
         raise HTTPException(status_code=404, detail="Incorrect username or password")
     user_dict = vars(user_obj)
-
     if not user_dict:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     user = UserInDB(**user_dict)
@@ -36,4 +36,5 @@ async def login(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestF
 
     if not hashed_password == user.hashed_password:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
+    logging.info("Token is created!")
     return {"access_token": user.username, "token_type": "bearer"}
