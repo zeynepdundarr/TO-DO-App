@@ -22,7 +22,7 @@ docker build -t <image-name> .
 docker run -p <local-port-number>:8080 zeynep
 ```
 
-You should enter address [http://localhost:<-local-port-number->/docs](http://localhost:<local-port-number>/docs) to use Todo-App. 
+You should enter address [http://localhost:{your_port_number}/docs](http://localhost:<local-port-number>/docs) to use Todo-App. 
 
 
 ## Run Tests
