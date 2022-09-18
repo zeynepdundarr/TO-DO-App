@@ -1,4 +1,4 @@
-# Todo-App 
+# Todo-App 📝 
 
 ## Project Description
 
@@ -26,15 +26,15 @@ You should enter address [http://localhost:<-local-port-number->/docs](http://lo
 
 
 ## Run Tests
-Tests can be found in the tests/ folder.
+Tests can be found in the tests/ folder in app/ directory.
 
-In order to run the test suit you should change the docker file in the main directory.
-
-Change **CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]** line to  **CMD pytest app/tests**.
-
+In order to run the test suit you should run the commands below.
 ```bash
-docker build -t <test-image-name> .
-docker run <test-image-name>
+git clone https://github.com/zeynepdundarr/TO-DO-App.git
+cd TO-DO-App
+pip install -r requirements.txt
+cd app
+pytest tests/
 ```
 
 ## Web Routes
